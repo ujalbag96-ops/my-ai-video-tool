@@ -4,7 +4,7 @@ import time
 
 # Setup
 API_URL = "https://api-inference.huggingface.co/models/THUDM/CogVideoX-5B"
-HF_TOKEN = "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"
+HF_TOKEN = "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"
 headers = {"Authorization": f"Bearer {HF_TOKEN}"}
 
 st.set_page_config(page_title="My AI Video Generator", layout="centered")
