@@ -1,28 +1,34 @@
 import streamlit as st
 import requests
+import time
 
-# Stable Model for Quick Video Generation
+# Streamlit Secrets se token lena
+try:
+    hf_token = st.secrets["HF_TOKEN"]
+except Exception:
+    st.error("Secrets mein HF_TOKEN nahi mila!")
+    st.stop()
+
 API_URL = "https://api-inference.huggingface.co/models/facebook/animatediff-v2"
-HF_TOKEN = "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"
-headers = {"Authorization": f"Bearer {HF_TOKEN}"}
+headers = {"Authorization": f"Bearer {hf_token}"}
 
-st.set_page_config(page_title="Deepak AI Video Tool", layout="centered")
 st.title("🎥 AI Video Generator")
-st.write("Create short AI videos easily!")
-
-prompt = st.text_input("Describe your video:", "A cute cat playing in the garden")
+prompt = st.text_input("Describe your video:", "A small cat playing with a ball.")
 
 if st.button("Generate Video"):
-    if prompt:
-        with st.spinner("AI is working... creates video in 60 seconds!"):
+    if not prompt:
+        st.warning("Please enter a prompt.")
+    else:
+        with st.spinner("AI is cooking your video... Please wait 1-2 minutes."):
+            # Hugging Face API call
             response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
             
             if response.status_code == 200:
                 st.video(response.content)
                 st.success("Done!")
+            elif response.status_code == 401:
+                st.error("Error 401: Token invalid hai. Hugging Face se nayi WRITE token lijiye.")
             elif response.status_code == 503:
-                st.info("Model is loading... Please wait 30 seconds and click again.")
+                st.info("Model load ho raha hai... 30 seconds baad phir se button dabayein.")
             else:
-                st.error(f"Error: {response.status_code}. Try a different prompt.")
-    else:
-        st.warning("Please enter a prompt.")
+                st.error(f"Error {response.status_code}: {response.text}")
