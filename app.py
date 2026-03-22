@@ -2,33 +2,31 @@ import streamlit as st
 import requests
 import time
 
-# Streamlit Secrets se token lena
-try:
-    hf_token = st.secrets["HF_TOKEN"]
-except Exception:
-    st.error("Secrets mein HF_TOKEN nahi mila!")
-    st.stop()
+st.title("🎬 Free AI Video Generator")
 
-API_URL = "https://api-inference.huggingface.co/models/facebook/animatediff-v2"
-headers = {"Authorization": f"Bearer {hf_token}"}
+# Free Model URL
+API_URL = "https://router.huggingface.co/hf-inference/models/damo-vilab/text-to-video-ms-1.5m"
+headers = {"Authorization": f"Bearer {st.secrets['HF_TOKEN']}"}
 
-st.title("🎥 AI Video Generator")
-prompt = st.text_input("Describe your video:", "A small cat playing with a ball.")
+def query(payload):
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response
+
+prompt = st.text_input("Video Prompt Likhein:", "A cute cat running in the park")
 
 if st.button("Generate Video"):
     if not prompt:
-        st.warning("Please enter a prompt.")
+        st.warning("Please enter a prompt first!")
     else:
-        with st.spinner("AI is cooking your video... Please wait 1-2 minutes."):
-            # Hugging Face API call
-            response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
+        with st.spinner("Video ban raha hai... isme 1-2 minute lag sakte hain."):
+            output = query({"inputs": prompt})
             
-            if response.status_code == 200:
-                st.video(response.content)
-                st.success("Done!")
-            elif response.status_code == 401:
-                st.error("Error 401: Token invalid hai. Hugging Face se nayi WRITE token lijiye.")
-            elif response.status_code == 503:
-                st.info("Model load ho raha hai... 30 seconds baad phir se button dabayein.")
+            if output.status_code == 200:
+                st.video(output.content)
+                st.success("Hogaya!")
+            elif output.status_code == 503:
+                st.error("Model abhi 'Loading' mode mein hai. 30 seconds baad phir se try karein.")
             else:
-                st.error(f"Error {response.status_code}: {response.text}")
+                st.error(f"Error: {output.status_code}. Model abhi free tier par available nahi hai.")
+
+st.info("Note: Free models kabhi kabhi slow hote hain ya down ho jate hain.")
