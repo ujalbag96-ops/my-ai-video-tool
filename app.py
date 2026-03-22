@@ -9,7 +9,7 @@ except Exception:
     st.error("Secrets mein HF_TOKEN nahi mila!")
     st.stop()
 
-API_URL = "https://api-inference.huggingface.co/pipeline/text-to-video/facebook/animatediff-v2"
+API_URL = "https://api-inference.huggingface.co/models/facebook/animatediff-v2"
 headers = {"Authorization": f"Bearer {hf_token}"}
 
 st.title("🎥 AI Video Generator")
