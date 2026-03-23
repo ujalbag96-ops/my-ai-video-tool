@@ -15,7 +15,6 @@ genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # Model initialize (Latest stable version)
 model = genai.GenerativeModel('gemini-1.5-flash')
-
 # Chat interface
 user_input = st.text_input("Mujhse kuch bhi puchiye:", placeholder="Kaise ho?")
 
