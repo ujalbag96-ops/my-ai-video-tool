@@ -11,7 +11,7 @@ if "GEMINI_API_KEY" not in st.secrets:
     st.stop()
 
 # Gemini setup
-genai.configure(api_key=st.secrets["AIzaSyB-MKbkzmf5FOAqdE2nO1jac4YFS7LWE2I"])
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # Model initialize (Latest stable version)
 model = genai.GenerativeModel('gemini-1.5-flash')
